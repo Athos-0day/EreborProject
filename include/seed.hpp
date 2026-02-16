@@ -32,6 +32,7 @@ namespace Erebor {
              * @param length Size of mnemonic phrase (12 or 24).
              * @return Generated entropy as byte array.
              * @throw ForbiddenSize If length is not 12 or 24.
+             * @throw CryptoException If CSPRNG fails.
              */
             static std::array<uint8_t, 32> generateEntropy(std::size_t length);
 
@@ -68,7 +69,7 @@ namespace Erebor {
              *
              * @param length Size of mnemonic phrase (12 or 24).
              * @param indices Array of 11-bit indices.
-             * @param language Language code ("en", "fr", "es", ...).
+             * @param language Language code ("en", "fr", ...).
              * @return Vector containing the mnemonic words.
              * @throw ForbiddenSize If length is not 12 or 24.
              * @throw LanguageException If language is unsupported.
