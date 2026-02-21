@@ -45,12 +45,34 @@ namespace Erebor {
         };
 
         /**
-         * @brief Derives the Master Node from the 512 bits seed.
-         * @param seed the 512 bits seed.
-         * @return Master Node.
+         * @brief Derives the Master Node from a seed of variable length.
+         * @param seed Pointer to the seed data.
+         * @param len Length of the seed in bytes (typically 16, 32, or 64).
+         * @return The master ExtendedKey.
          * @throw CryptoException If HMAC-SHA512 fails.
          */
-        static ExtendedKey computeMasterNode(const Erebor::Seed::Seed512& seed);
+        static ExtendedKey computeMasterNode(const uint8_t* seed, size_t len);
+
+        /**
+         * @brief Overload for BIP-39 Seed512 (64 bytes).
+         * @param seed The 512-bit seed object.
+         * @return The master ExtendedKey.
+         */
+        static ExtendedKey computeMasterNode(const Erebor::Seed::Seed512& seed) {
+            return computeMasterNode(seed.data(), seed.size());
+        }
+
+        /**
+         * @brief Computes the 33-byte compressed public key from a 32-byte private key.
+         * * This function uses the secp256k1 elliptic curve to perform point multiplication 
+         * (G * privateKey). The resulting public key is serialized in its compressed form 
+         * as required by the BIP-32 standard.
+         * * @param privKey A 32-byte array containing the private key.
+         * @return std::array<uint8_t, 33> The 33-byte compressed public key.
+         * @throw CryptoException If the private key is invalid (0 or >= curve order) 
+         * or if the public key creation/serialization fails.
+         */
+        static std::array<uint8_t, 33> computePublicKey(const std::array<uint8_t, 32>& privKey);
 
         /**
          * @brief Derives a child key from a parent ExtendedKey.
